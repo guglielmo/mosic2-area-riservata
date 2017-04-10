@@ -32,6 +32,12 @@ class RequestTest(TestCase):
             data={"username": "mosic", "password": "mosicmosic"}
         ).json()
 
+        response = self.client_stub.delete(
+            'http://localhost:8000/seduta/1/',
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 404)
+
 
         response = self.client_stub.post(
             'http://localhost:8000/seduta/',
@@ -40,8 +46,35 @@ class RequestTest(TestCase):
         )
         self.assertEquals(response.status_code, 201)
 
+        response = self.client_stub.put(
+            'http://localhost:8000/upload_file/files/Architettura.pdf',
+            files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 204)
+
+        response = self.client_stub.put(
+            'http://localhost:8000/upload_file/files/JWTHandbook.pdf',
+            files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 204)
+
+        response = self.client_stub.put(
+            'http://localhost:8000/upload_file/fils/JWTHandbook.pdf',
+            files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 400)
+
         response = self.client_stub.get(
             'http://localhost:8000/seduta/1/',
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 200)
+
+        response = self.client_stub.delete(
+            'http://localhost:8000/seduta/1/',
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 204)

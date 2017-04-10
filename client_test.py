@@ -36,7 +36,7 @@ print("")
 print("Uploading Architettura file")
 response = requests.put(
     'http://localhost:8000/upload_file/files/Architettura.pdf',
-    files={'file': open('/Users/gu/Desktop/Architettura mammatrozzo.pdf', 'rb')},
+    files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
@@ -45,7 +45,7 @@ print("")
 print("Uploading jwt-handbook file")
 response = requests.put(
     'http://localhost:8000/upload_file/files/JWTHandbook.pdf',
-    files={'file': open('/Users/gu/Desktop/Reading/jwt-handbook.pdf', 'rb')},
+    files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
@@ -54,7 +54,7 @@ print("")
 print("Uploading file with no corresponding record in DB")
 response = requests.put(
     'http://localhost:8000/upload_file/fils/JWTHandbook.pdf&format=json',
-    files={'file': open('/Users/gu/Desktop/Reading/jwt-handbook.pdf', 'rb')},
+    files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
