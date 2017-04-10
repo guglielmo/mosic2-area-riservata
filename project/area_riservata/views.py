@@ -27,8 +27,17 @@ class FileUploadView(views.APIView):
         file_ptr = request.data['file']
 
         # retrieve Allegato object, corresponding to file
-        allegato_obj = Allegato.objects.get(relURI=filename)
+        try:
+            allegato_obj = Allegato.objects.get(relURI=filename)
 
-        # bind the uploaded content to the file field of the allegato object
-        allegato_obj.file.save(filename, file_ptr)
-        return Response(status=204)
+            # remove file from storage if existingm to avoid files duplication
+            allegato_obj.file.storage.delete(filename)
+
+            # save file to storage
+            allegato_obj.file.save(filename, file_ptr)
+
+            return Response(status=204)
+        except Allegato.DoesNotExist:
+            return Response(status=400)
+        except Exception as e:
+            return Response(status=500)

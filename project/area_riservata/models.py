@@ -64,7 +64,6 @@ def relURI_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<relURI>/<filename>
     return '{0}'.format(instance.relURI)
 
-
 class Allegato(models.Model):
     id = models.IntegerField(primary_key=True)
 
@@ -109,3 +108,22 @@ class Allegato(models.Model):
 
     class Meta:
         verbose_name_plural = "allegati"
+
+
+
+# signals ---------------------------------------------
+
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
+
+@receiver(post_delete, sender=Allegato)
+def allegato_post_delete_handler(sender, **kwargs):
+    """remove files from storage when the allegato object is removed
+    :param sender: 
+    :param kwargs: 
+    :return: 
+    """
+    allegato_obj = kwargs['instance']
+    storage, path = allegato_obj.file.storage, allegato_obj.file.path
+    storage.delete(path)
