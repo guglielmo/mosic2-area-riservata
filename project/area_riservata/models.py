@@ -81,7 +81,7 @@ class Allegato(models.Model):
     )
 
     relURI = models.CharField(
-        max_length=256
+        max_length=256, unique=True
     )
 
     # file will contain the file,

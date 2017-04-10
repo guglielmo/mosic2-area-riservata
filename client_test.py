@@ -17,11 +17,25 @@ response = requests.delete(
 )
 print("Seduta removed")
 
+
 response = requests.post(
-    'http://localhost:8000/seduta/', json=seduta,
+    'http://localhost:8000/seduta/',
+    json=seduta,
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print("Seduta created")
+
+response = requests.put(
+    'http://localhost:8000/upload_file/files/Architettura.pdf',
+    files={'file': open('/Users/gu/Desktop/Architettura mammatrozzo.pdf', 'rb')},
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+response = requests.put(
+    'http://localhost:8000/upload_file/files/JWTHandbook.pdf',
+    files={'file': open('/Users/gu/Desktop/Reading/jwt-handbook.pdf', 'rb')},
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+print("2 files uploaded")
 
 response = requests.get(
     'http://localhost:8000/seduta/1/',

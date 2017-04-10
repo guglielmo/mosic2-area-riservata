@@ -4,9 +4,16 @@ from models import Seduta, PuntoODG, Allegato
 
 
 class AllegatoSerializer(serializers.HyperlinkedModelSerializer):
+    file = serializers.FileField(
+        max_length=None, use_url=True,
+        allow_empty_file=True, read_only=True
+    )
+    relURI = serializers.CharField(
+        max_length=256, write_only=True
+    )
     class Meta:
         model = Allegato
-        fields = ('id', 'data', 'nome', 'tipo', 'relURI', 'dimensione')
+        fields = ('id', 'data', 'nome', 'tipo', 'relURI', 'dimensione', 'file')
 
 
 class PuntoODGSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,7 +43,6 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
                 punti_odg_data = validated_data.pop('punti_odg')
 
             seduta = Seduta.objects.create(**validated_data)
-
             for punto_odg_data in punti_odg_data:
                 # remove OrderDict from punto_odg_data
                 allegati_data = []

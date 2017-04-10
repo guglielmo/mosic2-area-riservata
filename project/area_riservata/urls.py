@@ -9,7 +9,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
-from views import SedutaViewSet
+from views import SedutaViewSet, FileUploadView
 
 admin.autodiscover()
 
@@ -21,6 +21,7 @@ router.register(r'seduta', SedutaViewSet)
 urls = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
+    url(r'^upload_file/(?P<filename>.+)$', FileUploadView.as_view()),
     url(r'^api-token-auth/', obtain_jwt_token),
     url(r'^api-token-refresh/', refresh_jwt_token),
 ]
