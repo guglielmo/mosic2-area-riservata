@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('data', models.DateField(max_length=10)),
                 ('nome', models.CharField(max_length=128)),
                 ('tipo', models.CharField(max_length=8)),
-                ('relURI', models.CharField(max_length=256)),
+                ('relURI', models.CharField(max_length=255)),
                 ('dimensione', models.IntegerField(blank=True, null=True)),
             ],
             options={
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             name='PuntoODG',
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('denominazione', models.CharField(max_length=512)),
+                ('denominazione', models.CharField(max_length=255)),
                 ('progressivo', models.IntegerField(default=1, help_text='Posizione in sequenza odg')),
                 ('ordine', models.CharField(default='1', help_text='Indicazione punto PuntoODG: 1, 1a, 1b, 1b.2...', max_length=5)),
             ],
