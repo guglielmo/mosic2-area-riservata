@@ -31,8 +31,8 @@ class Seduta(models.Model):
 class PuntoODG(models.Model):
     id = models.IntegerField(primary_key=True)
 
-    denominazione = models.CharField(
-        max_length=512,
+    denominazione = models.TextField(
+        max_length=512
     )
 
     progressivo = models.IntegerField(
@@ -80,7 +80,7 @@ class Allegato(models.Model):
     )
 
     relURI = models.CharField(
-        max_length=256, unique=True
+        max_length=255, unique=True
     )
 
     # file will contain the file,
