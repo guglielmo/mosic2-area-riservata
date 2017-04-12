@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Pagina della seduta {{ seduta.id }}{% endblock %}
+
+{% block page_title %}Pagina della seduta {{ seduta.id }}{% endblock page_title %}
+
+{% block content %}
+<p>Dettagli ...</p>
+<p>Data: {{ seduta.data }}</p>
+<p>Punti all'ordine del giorno</p>
+<ul>
+    {% for punto_odg in seduta.punti_odg.all %}
+    <li>
+        <p>{{ punto_odg.ordine }} - {{ punto_odg.denominazione }}</p>
+        <p>Documenti allegati</p>
+        <ul>
+            {% for doc in punto_odg.allegati.all %}
+                <li><a href="{{ doc.file }}">{{ doc.nome }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+    {%  endfor %}
+</ul>
+{% endblock content %}

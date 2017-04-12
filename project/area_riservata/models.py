@@ -22,7 +22,8 @@ class Seduta(models.Model):
     )
     hash = models.CharField(
         max_length=64,
-        blank=True, null=True
+        blank=True, null=True,
+        unique=True
     )
 
     def __unicode__(self):

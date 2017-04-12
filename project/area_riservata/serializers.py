@@ -1,3 +1,6 @@
+import hashlib
+
+from django.conf import settings
 from django.db import transaction
 from rest_framework import serializers
 from models import Seduta, PuntoODG, Allegato
@@ -43,6 +46,13 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
                 punti_odg_data = validated_data.pop('punti_odg')
 
             seduta = Seduta.objects.create(**validated_data)
+
+            # generates hash
+            seduta.hash = hashlib.sha256(
+                settings.HASH_SALT + ":" + seduta.id
+            ).hexdigest()
+            seduta.save()
+
             for punto_odg_data in punti_odg_data:
                 # remove OrderDict from punto_odg_data
                 allegati_data = []
@@ -69,7 +79,7 @@ class SedutaDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Seduta
-        fields = ('id', 'tipo', 'data', 'ufficiale', 'punti_odg')
+        fields = ('id', 'hash', 'tipo', 'data', 'ufficiale', 'punti_odg')
 
 
 

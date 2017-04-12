@@ -1,4 +1,6 @@
 # ViewSets define the view behavior.
+from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from rest_framework import viewsets, views
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import FileUploadParser
@@ -41,3 +43,26 @@ class FileUploadView(views.APIView):
             return Response(status=400)
         except Exception as e:
             return Response(status=500)
+
+
+class PublicView(TemplateView):
+    template_name = 'public.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            hash = kwargs.pop('hash')
+            self.seduta = Seduta.objects.get(hash=hash)
+            return super(PublicView, self).dispatch(request, *args, **kwargs)
+        except Seduta.DoesNotExist:
+            return redirect('tampering-403')
+
+
+    def get_context_data(self, **kwargs):
+        # self.seduta is extracted in the dispatch method
+        return super(PublicView, self).get_context_data(
+            seduta=self.seduta,
+            **kwargs
+        )
+
+
+

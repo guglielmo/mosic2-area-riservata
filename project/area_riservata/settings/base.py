@@ -295,3 +295,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+HASH_SALT = env('HASH_SALT', default='-*secret*-')

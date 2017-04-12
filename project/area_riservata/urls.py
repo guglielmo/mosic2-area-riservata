@@ -9,6 +9,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
+import views
 from views import SedutaViewSet, FileUploadView
 
 admin.autodiscover()
@@ -21,9 +22,11 @@ router.register(r'seduta', SedutaViewSet)
 urls = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
-    url(r'^upload_file/(?P<filename>.+)$', FileUploadView.as_view()),
-    url(r'^api-token-auth/', obtain_jwt_token),
-    url(r'^api-token-refresh/', refresh_jwt_token),
+    url(r'^upload_file/(?P<filename>.+)$', FileUploadView.as_view(), name='upload-file'),
+    url(r'^api-token-auth/', obtain_jwt_token, name='obtain-jwt'),
+    url(r'^api-token-refresh/', refresh_jwt_token, name='refresh-jwt'),
+    url(r'^seduta-pre-cipe/(?P<hash>[^/]+)$', views.PublicView.as_view(), name='seduta-pre-cipe' ),
+    url(r'^403$', views.TemplateView.as_view(template_name="403.html"), name='tampering-403'),
 ]
 urlpatterns = urls
 
