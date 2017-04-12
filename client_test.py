@@ -2,10 +2,17 @@ import json
 import requests
 
 
+# test locally or with remote service_url
+# service_url = "http://localhost:8000"
+# password = 'mosicmosic'
+
+service_url = "http://area-riservata.mosic2.celata.com"
+password = 'cowpony-butter-vizor'
+
 print("Retrieving token for user mosic")
 r = requests.post(
-    'http://localhost:8000/api-token-auth/',
-    {"username": "mosic", "password": "mosicmosic"}
+    '{0}/api-token-auth/'.format(service_url),
+    {"username": "mosic", "password": password}
 )
 jwt_token = r.json()['token']
 print(r)
@@ -15,7 +22,7 @@ print("")
 
 print("Removing seduta metadata recursively")
 response = requests.delete(
-    'http://localhost:8000/seduta/1/',
+    '{0}/seduta/1/'.format(service_url),
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
@@ -23,10 +30,10 @@ print("")
 
 
 print("Creating seduta from json")
-with open('./resources/fixtures/seduta.json', 'r') as f:
+with open('./resources/fixtures/seduta.json'.format(service_url), 'r') as f:
         seduta = json.load(f)
 response = requests.post(
-    'http://localhost:8000/seduta/',
+    '{0}/seduta/'.format(service_url),
     json=seduta,
     headers={'Authorization': 'JWT ' + jwt_token}
 )
@@ -35,7 +42,7 @@ print("")
 
 print("Uploading Architettura file")
 response = requests.put(
-    'http://localhost:8000/upload_file/files/Architettura.pdf',
+    '{0}/upload_file/files/Architettura.pdf'.format(service_url),
     files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
@@ -44,7 +51,7 @@ print("")
 
 print("Uploading jwt-handbook file")
 response = requests.put(
-    'http://localhost:8000/upload_file/files/JWTHandbook.pdf',
+    '{0}/upload_file/files/JWTHandbook.pdf'.format(service_url),
     files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
@@ -53,7 +60,7 @@ print("")
 
 print("Uploading file with no corresponding record in DB")
 response = requests.put(
-    'http://localhost:8000/upload_file/fils/JWTHandbook.pdf&format=json',
+    '{0}/upload_file/fils/JWTHandbook.pdf&format=json'.format(service_url),
     files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )
@@ -63,7 +70,7 @@ print("")
 
 print("Retrieving full seduta")
 response = requests.get(
-    'http://localhost:8000/seduta/1/',
+    '{0}/seduta/1/'.format(service_url),
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)

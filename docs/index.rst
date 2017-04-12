@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to mosic2-area-riservata's documentation!
-====================================================================
+=================================================
 
 Contents:
 

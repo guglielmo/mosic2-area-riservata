@@ -20,6 +20,10 @@ class Seduta(models.Model):
     ufficiale = models.BooleanField(
         default=False,
     )
+    hash = models.CharField(
+        max_length=64,
+        blank=True, null=True
+    )
 
     def __unicode__(self):
         return self.tipo + " del " + self.data.strftime('%Y-%m-%d')
@@ -32,7 +36,7 @@ class PuntoODG(models.Model):
     id = models.IntegerField(primary_key=True)
 
     denominazione = models.TextField(
-        max_length=512
+        max_length=1024
     )
 
     progressivo = models.IntegerField(

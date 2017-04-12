@@ -1,4 +1,5 @@
 Deploy
-========
+======
 
-This is where you describe how the project is deployed in production.
+Deployment to a CentOS server is described in italian in
+`deploy/README.md`.
