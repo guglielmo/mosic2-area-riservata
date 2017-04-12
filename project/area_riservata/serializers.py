@@ -49,7 +49,7 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
 
             # generates hash
             seduta.hash = hashlib.sha256(
-                settings.HASH_SALT + ":" + seduta.id
+                settings.HASH_SALT + ":" + str(seduta.id)
             ).hexdigest()
             seduta.save()
 
