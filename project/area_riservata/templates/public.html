@@ -7,18 +7,22 @@
 {% block content %}
 <p>Dettagli ...</p>
 <p>Data: {{ seduta.data }}</p>
+{% if seduta.punti_odg.count %}
 <p>Punti all'ordine del giorno</p>
 <ul>
     {% for punto_odg in seduta.punti_odg.all %}
     <li>
         <p>{{ punto_odg.ordine }} - {{ punto_odg.denominazione }}</p>
+        {% if punto_odg.allegati.count %}
         <p>Documenti allegati</p>
         <ul>
             {% for doc in punto_odg.allegati.all %}
                 <li><a href="{{ doc.file.url }}">{{ doc.nome }}</a></li>
             {% endfor %}
         </ul>
+        {% endif %}
     </li>
     {%  endfor %}
 </ul>
+{% endif %}
 {% endblock content %}

@@ -3,11 +3,11 @@ import requests
 
 
 # test locally or with remote service_url
-service_url = "http://localhost:8000"
-password = 'mosicmosic'
+# service_url = "http://localhost:8000"
+# password = 'mosicmosic'
 
-#service_url = "http://area-riservata.mosic2.celata.com"
-#password = 'cowpony-butter-vizor'
+service_url = "http://area-riservata.mosic2.celata.com"
+password = 'cowpony-butter-vizor'
 
 print("Retrieving token for user mosic")
 r = requests.post(
