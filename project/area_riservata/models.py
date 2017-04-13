@@ -67,7 +67,7 @@ class PuntoODG(models.Model):
 
 def relURI_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<relURI>/<filename>
-    return '{0}'.format(instance.relURI)
+    return '{0}'.format(filename)
 
 class Allegato(models.Model):
     id = models.IntegerField(primary_key=True)

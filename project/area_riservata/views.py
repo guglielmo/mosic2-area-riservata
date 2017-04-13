@@ -32,11 +32,16 @@ class FileUploadView(views.APIView):
         try:
             allegato_obj = Allegato.objects.get(relURI=filename)
 
+            seduta_hash = allegato_obj.punto_odg.seduta.hash[:10]
+            complete_filename = "{0}_{1}".format(
+                seduta_hash, filename
+            )
+
             # remove file from storage if existingm to avoid files duplication
-            allegato_obj.file.storage.delete(filename)
+            allegato_obj.file.storage.delete(complete_filename)
 
             # save file to storage
-            allegato_obj.file.save(filename, file_ptr)
+            allegato_obj.file.save(complete_filename, file_ptr)
 
             return Response(status=204)
         except Allegato.DoesNotExist:

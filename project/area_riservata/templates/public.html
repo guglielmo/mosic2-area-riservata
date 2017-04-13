@@ -15,7 +15,7 @@
         <p>Documenti allegati</p>
         <ul>
             {% for doc in punto_odg.allegati.all %}
-                <li><a href="{{ doc.file }}">{{ doc.nome }}</a></li>
+                <li><a href="{{ doc.file.url }}">{{ doc.nome }}</a></li>
             {% endfor %}
         </ul>
     </li>
