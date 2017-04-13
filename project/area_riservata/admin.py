@@ -11,12 +11,6 @@ class AllegatoInline(admin.TabularInline):
     show_change_link = True
     readonly_fields = fields = ('nome', 'tipo', 'file', 'dimensione')
 
-    # def change_link(self, obj):
-    #     return mark_safe('<a href="%s">Full edit</a>' % \
-    #                     reverse('admin:area_riservata_puntoodg_change',
-    #                     args=(obj.id,)))
-
-
 class PuntoODGAdmin(admin.ModelAdmin):
     list_display = ('id', 'denominazione', 'progressivo', 'ordine', 'seduta')
     readonly_fields = list_display
@@ -33,8 +27,10 @@ class PuntoODGInline(admin.TabularInline):
 
     def change_link(self, obj):
         return mark_safe('<a href="%s">Full edit</a>' % \
-                        reverse('admin:area_riservata_puntoodg_change',
-                        args=(obj.id,)))
+            reverse('admin:area_riservata_puntoodg_change',
+                args=(obj.id,)
+            )
+        )
 
 class SedutaAdmin(admin.ModelAdmin):
     list_display = ('id', 'hash', 'data')

@@ -1,5 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
 # ViewSets define the view behavior.
+from django.contrib.sites.models import Site
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import TemplateView
 from rest_framework import viewsets, views
 from rest_framework.generics import get_object_or_404
@@ -43,11 +48,50 @@ class FileUploadView(views.APIView):
             # save file to storage
             allegato_obj.file.save(complete_filename, file_ptr)
 
-            return Response(status=204)
+            return Response(
+                status=204,
+                data={
+                    'status': 204,
+                    'message':
+                        u"File {0} caricato correttamente".format(filename)
+                }
+            )
         except Allegato.DoesNotExist:
-            return Response(status=400)
+            return Response(
+                status=404,
+                data={
+                    'status': 404,
+                    'message':
+                        u"File {0} non trovato".format(filename)
+                }
+            )
         except Exception as e:
-            return Response(status=500)
+            return Response(
+                status=500,
+                data={
+                    'status': 500,
+                    'message':
+                        u"Errore durante caricamento di {0}: {1}".format(filename, repr(e))
+                }
+            )
+
+
+class SedutaUrlView(views.APIView):
+    def get(self, request, id):
+        try:
+            seduta = Seduta.objects.get(pk=id)
+            seduta_url = "http://{0}{1}".format(
+                Site.objects.get(pk=1),
+                reverse('seduta-pre-cipe',
+                    args=(seduta.hash,)
+                )
+            )
+            return Response(data=seduta_url, status=200)
+        except Seduta.DoesNotExist:
+            return Response(
+                status=404,
+                data={'status': 404, 'message': u"Impossibile trovare seduta"}
+            )
 
 
 class PublicView(TemplateView):
