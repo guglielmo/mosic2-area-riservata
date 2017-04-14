@@ -92,6 +92,7 @@ class Allegato(models.Model):
     # it is null becaus it can be added after the Allegato
     # object has been created
     file = models.FileField(
+        max_length=255,
         blank=True, null=True,
         upload_to=relURI_path
     )
