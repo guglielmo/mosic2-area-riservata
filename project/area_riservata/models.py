@@ -130,5 +130,6 @@ def allegato_post_delete_handler(sender, **kwargs):
     :return: 
     """
     allegato_obj = kwargs['instance']
-    storage, path = allegato_obj.file.storage, allegato_obj.file.path
-    storage.delete(path)
+    if allegato_obj.file:
+        storage, path = allegato_obj.file.storage, allegato_obj.file.path
+        storage.delete(path)
