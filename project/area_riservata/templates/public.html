@@ -5,8 +5,7 @@
 {% block page_title %}Pagina della seduta {{ seduta.id }}{% endblock page_title %}
 
 {% block content %}
-<p>Dettagli ...</p>
-<p>Data: {{ seduta.data }}</p>
+<h2>Seduta pre-cipe del  {{ seduta.data }}</h2>
 {% if seduta.punti_odg.count %}
 <p>Punti all'ordine del giorno</p>
 <ul>
