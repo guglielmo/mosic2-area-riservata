@@ -5,9 +5,14 @@ from django.db import models
 class Seduta(models.Model):
     id = models.IntegerField(primary_key=True)
 
+    TIPO_SEDUTA_CHOICES = (
+        ('precipe','Pre CIPE'),
+        ('cipe','CIPE'),
+    )
     tipo = models.CharField(
         max_length=10,
-        default="Pre CIPE",
+        default="precipe",
+        choices=TIPO_SEDUTA_CHOICES,
         help_text="Tipo di seduta, se CIPE o Pre CIPE",
         verbose_name="Tipo di seduta"
     )
