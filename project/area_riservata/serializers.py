@@ -28,8 +28,6 @@ class PuntoODGSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SedutaSerializer(serializers.HyperlinkedModelSerializer):
-    punti_odg = PuntoODGSerializer(required=False, many=True, write_only=True)
-    self_uri = serializers.HyperlinkedIdentityField(view_name = 'seduta-detail')
 
     def create(self, validated_data):
         """create the Seduta object, all PuntoODG objects
@@ -49,7 +47,7 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
 
             # generates hash
             seduta.hash = hashlib.sha256(
-                settings.HASH_SALT + ":" + str(seduta.id),
+                settings.HASH_SALT + ":" + seduta.tipo + ":" + str(seduta.id_seduta),
             ).hexdigest()
             seduta.save()
 
@@ -71,7 +69,19 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Seduta
+        fields = ('id_seduta', 'tipo', 'data', 'ufficiale', )
+
+class SedutaCIPESerializer(SedutaSerializer):
+    punti_odg = PuntoODGSerializer(required=False, many=True, write_only=True)
+    self_uri = serializers.HyperlinkedIdentityField(view_name = 'cipe-detail')
+    class Meta(SedutaSerializer.Meta):
         fields = ('id', 'self_uri', 'tipo', 'data', 'ufficiale', 'punti_odg')
+
+class SedutaPreCIPESerializer(SedutaSerializer):
+    punti_odg = PuntoODGSerializer(required=False, many=True, write_only=True)
+    self_uri = serializers.HyperlinkedIdentityField(view_name = 'precipe-detail')
+    class Meta(SedutaSerializer.Meta):
+        fields = ('tipo', 'id_seduta', 'self_uri', 'data', 'ufficiale', 'punti_odg')
 
 
 class SedutaDetailSerializer(serializers.HyperlinkedModelSerializer):
@@ -79,7 +89,7 @@ class SedutaDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Seduta
-        fields = ('id', 'hash', 'tipo', 'data', 'ufficiale', 'punti_odg')
+        fields = ('tipo', 'id_seduta', 'hash', 'data', 'ufficiale', 'punti_odg')
 
 
 

@@ -3,11 +3,11 @@ import requests
 
 
 # test locally or with remote service_url
-# service_url = "http://localhost:8000"
-# password = 'mosicmosic'
+service_url = "http://localhost:8000"
+password = 'mosicmosic'
 
-service_url = "http://area-riservata.mosic2.celata.com"
-password = 'cowpony-butter-vizor'
+# service_url = "http://area-riservata.mosic2.celata.com"
+# password = 'cowpony-butter-vizor'
 
 print("Retrieving token for user mosic")
 r = requests.post(
@@ -20,9 +20,17 @@ print(jwt_token)
 print("")
 
 
+print("Retrieving seduta internal id")
+response = requests.get(
+    '{0}/seduta/precipe/1'.format(service_url),
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+seduta_id = response.json()['id']
+print("")
+
 print("Removing seduta metadata recursively")
 response = requests.delete(
-    '{0}/seduta/1/'.format(service_url),
+    '{0}/precipe/{1}'.format(service_url, seduta_id),
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
@@ -33,7 +41,7 @@ print("Creating seduta from json")
 with open('./resources/fixtures/seduta.json'.format(service_url), 'r') as f:
         seduta = json.load(f)
 response = requests.post(
-    '{0}/seduta/'.format(service_url),
+    '{0}/precipe'.format(service_url),
     json=seduta,
     headers={'Authorization': 'JWT ' + jwt_token}
 )
@@ -68,10 +76,22 @@ print(response)
 print("")
 
 
+print("Retrieving seduta internal id")
+response = requests.get(
+    '{0}/seduta/precipe/1'.format(service_url),
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+seduta_id = response.json()['id']
+seduta_url = response.json()['url']
+print("")
+
 print("Retrieving full seduta")
 response = requests.get(
-    '{0}/seduta/1/'.format(service_url),
+    '{0}/precipe/{1}'.format(service_url, seduta_id),
     headers={'Authorization': 'JWT ' + jwt_token}
 )
 print(response)
+
 print(response.json())
+
+print("public url: {0}".format(seduta_url))

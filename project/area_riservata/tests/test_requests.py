@@ -32,15 +32,9 @@ class RequestTest(TestCase):
             data={"username": "mosic", "password": "mosicmosic"}
         ).json()
 
-        response = self.client_stub.delete(
-            'http://localhost:8000/seduta/1/',
-            headers={'Authorization': 'JWT ' + r['token']}
-        )
-        self.assertEquals(response.status_code, 404)
-
 
         response = self.client_stub.post(
-            'http://localhost:8000/seduta/',
+            'http://localhost:8000/precipe',
             json=seduta,
             headers={'Authorization': 'JWT ' + r['token']}
         )
@@ -65,16 +59,17 @@ class RequestTest(TestCase):
             files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
             headers={'Authorization': 'JWT ' + r['token']}
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response.status_code, 404)
 
         response = self.client_stub.get(
-            'http://localhost:8000/seduta/1/',
+            'http://localhost:8000/precipe/1',
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 200)
 
         response = self.client_stub.delete(
-            'http://localhost:8000/seduta/1/',
+            'http://localhost:8000/precipe/1',
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 204)
+

@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Seduta(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id_seduta = models.IntegerField()
 
     TIPO_SEDUTA_CHOICES = (
         ('precipe','Pre CIPE'),
@@ -36,6 +36,7 @@ class Seduta(models.Model):
 
     class Meta:
         verbose_name_plural = "sedute"
+        unique_together = (('tipo', 'id_seduta'),)
 
 
 class PuntoODG(models.Model):

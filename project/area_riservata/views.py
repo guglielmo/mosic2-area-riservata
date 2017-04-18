@@ -2,6 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 # ViewSets define the view behavior.
+from collections import OrderedDict
+
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -12,19 +14,30 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 
 from models import Seduta, Allegato
-from serializers import SedutaSerializer, SedutaDetailSerializer
+from serializers import SedutaDetailSerializer, \
+    SedutaCIPESerializer, SedutaPreCIPESerializer
 
 
-class SedutaViewSet(viewsets.ModelViewSet):
-    queryset = Seduta.objects.all()
-    serializer_class = SedutaSerializer
+class SedutaCIPEViewSet(viewsets.ModelViewSet):
+    queryset = Seduta.objects.filter(tipo='cipe')
+    serializer_class = SedutaCIPESerializer
 
     def retrieve(self, request, pk=None):
-        queryset = Seduta.objects.all()
+        queryset = Seduta.objects.filter(tipo='cipe')
         seduta = get_object_or_404(queryset, pk=pk)
         serializer = SedutaDetailSerializer(seduta)
         return Response(serializer.data)
 
+
+class SedutaPreCIPEViewSet(viewsets.ModelViewSet):
+    queryset = Seduta.objects.filter(tipo='precipe')
+    serializer_class = SedutaPreCIPESerializer
+
+    def retrieve(self, request, pk=None):
+        queryset = Seduta.objects.filter(tipo='precipe')
+        seduta = get_object_or_404(queryset, pk=pk)
+        serializer = SedutaDetailSerializer(seduta)
+        return Response(serializer.data)
 
 class FileUploadView(views.APIView):
     parser_classes = (FileUploadParser,)
@@ -76,17 +89,24 @@ class FileUploadView(views.APIView):
             )
 
 
-class SedutaUrlView(views.APIView):
-    def get(self, request, id):
+class SedutaView(views.APIView):
+    def get(self, request, tipo, id_seduta):
         try:
-            seduta = Seduta.objects.get(pk=id)
+            seduta = Seduta.objects.get(id_seduta=id_seduta, tipo=tipo)
+
             seduta_url = "http://{0}{1}".format(
                 Site.objects.get(pk=1),
-                reverse('seduta-pre-cipe',
+                reverse('seduta-{0}'.format(tipo),
                     args=(seduta.hash,)
                 )
             )
-            return Response(data=seduta_url, status=200)
+            return Response(
+                data=OrderedDict([
+                    ('id', seduta.id),
+                    ('url', seduta_url)
+                ]),
+                status=200
+            )
         except Seduta.DoesNotExist:
             return Response(
                 status=404,
@@ -112,6 +132,7 @@ class PublicView(TemplateView):
             seduta=self.seduta,
             **kwargs
         )
+
 
 
 

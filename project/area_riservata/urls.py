@@ -11,23 +11,25 @@ from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 import views
-from views import SedutaViewSet, FileUploadView
+from views import SedutaCIPEViewSet, SedutaPreCIPEViewSet, FileUploadView
 
 admin.autodiscover()
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'seduta', SedutaViewSet)
+router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'cipe', SedutaCIPEViewSet, base_name='cipe')
+router.register(r'precipe', SedutaPreCIPEViewSet, base_name='precipe')
 
 
 urls = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
     url(r'^upload_file/(?P<filename>.+)$', FileUploadView.as_view(), name='upload-file'),
-    url(r'^url-seduta/(?P<id>.+)$', views.SedutaUrlView.as_view(), name='url-seduta'),
+    url(r'^seduta/(?P<tipo>[^/]+)/(?P<id_seduta>.+)$', views.SedutaView.as_view(), name='url-seduta'),
     url(r'^api-token-auth/', obtain_jwt_token, name='obtain-jwt'),
     url(r'^api-token-refresh/', refresh_jwt_token, name='refresh-jwt'),
-    url(r'^seduta-pre-cipe/(?P<hash>[^/]+)$', views.PublicView.as_view(), name='seduta-pre-cipe' ),
+    url(r'^seduta-precipe/(?P<hash>[^/]+)$', views.PublicView.as_view(), name='seduta-precipe' ),
+    url(r'^seduta-cipe/(?P<hash>[^/]+)$', views.PublicView.as_view(), name='seduta-cipe' ),
     url(r'^403$', views.TemplateView.as_view(template_name="403.html"), name='tampering-403'),
 ]
 urlpatterns = urls
