@@ -3,11 +3,11 @@ import requests
 
 
 # test locally or with remote service_url
-service_url = "http://localhost:8000"
-password = 'mosicmosic'
+# service_url = "http://localhost:8000"
+# password = 'mosicmosic'
 
-# service_url = "http://area-riservata.mosic2.celata.com"
-# password = 'cowpony-butter-vizor'
+service_url = "http://area-riservata.mosic2.celata.com"
+password = 'cowpony-butter-vizor'
 
 print("Retrieving token for user mosic")
 r = requests.post(
@@ -25,15 +25,16 @@ response = requests.get(
     '{0}/seduta/precipe/1'.format(service_url),
     headers={'Authorization': 'JWT ' + jwt_token}
 )
-seduta_id = response.json()['id']
-print("")
+if 'id' in response.json():
+    seduta_id = response.json()['id']
+    print("")
 
-print("Removing seduta metadata recursively")
-response = requests.delete(
-    '{0}/precipe/{1}'.format(service_url, seduta_id),
-    headers={'Authorization': 'JWT ' + jwt_token}
-)
-print(response)
+    print("Removing seduta metadata recursively")
+    response = requests.delete(
+        '{0}/precipe/{1}'.format(service_url, seduta_id),
+        headers={'Authorization': 'JWT ' + jwt_token}
+    )
+    print(response)
 print("")
 
 
