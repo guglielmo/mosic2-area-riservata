@@ -8,7 +8,7 @@ from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
-from rest_framework import viewsets, views
+from rest_framework import viewsets, views, mixins
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
@@ -17,8 +17,40 @@ from models import Seduta, Allegato
 from serializers import SedutaDetailSerializer, \
     SedutaCIPESerializer, SedutaPreCIPESerializer
 
+class BaseSedutaViewSet(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.DestroyModelMixin,
+                    viewsets.GenericViewSet):
+    """
+    The base viewset for the SedutaViewsets, that provides 
+    `retrieve`, `create`, `list` and `delete` actions.
 
-class SedutaCIPEViewSet(viewsets.ModelViewSet):
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+    pass
+
+
+class SedutaCIPEViewSet(BaseSedutaViewSet):
+    """
+    create:
+    Creates a new seduta of type `cipe`, and all its sub-objects, if they're
+    recursively passed in the JSON body 
+    
+    list:
+    Lists all sedute of type `cipe`. Shows link to detailed views.
+    
+    retrieve:
+    Shows the full details of the seduta of type `cipe` identified by {id},
+    along with its children objects.
+    
+    delete:
+    Deletes the seduta of type `cipe` identified by {id} and, recursively,
+    its children objects from the Database  and the attached documents from the
+    file system. 
+    """
+
     queryset = Seduta.objects.filter(tipo='cipe')
     serializer_class = SedutaCIPESerializer
 
@@ -29,9 +61,27 @@ class SedutaCIPEViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class SedutaPreCIPEViewSet(viewsets.ModelViewSet):
+class SedutaPreCIPEViewSet(BaseSedutaViewSet):
+    """
+    create:
+    Creates a new seduta of type `precipe`, and all its sub-objects, if they're
+    recursively passed in the JSON body 
+    
+    list:
+    Lists all sedute of type `precipe`. Shows link to detailed views.
+    
+    retrieve:
+    Shows the full details of the seduta of type `precipe` identified by {id},
+    along with its children objects.
+    
+    delete:
+    Deletes the seduta of type `precipe` identified by {id} and, recursively,
+    its children objects from the Database  and the attached documents from the
+    file system. 
+    """
     queryset = Seduta.objects.filter(tipo='precipe')
     serializer_class = SedutaPreCIPESerializer
+    http_method_names = ['get', 'post', 'head', 'delete']
 
     def retrieve(self, request, pk=None):
         queryset = Seduta.objects.filter(tipo='precipe')
@@ -43,6 +93,16 @@ class FileUploadView(views.APIView):
     parser_classes = (FileUploadParser,)
 
     def put(self, request, filename):
+        """
+        Uploads a file.
+        
+        The file is put into the `media` path, using part of the hash
+        and the `filename` parameter. 
+        
+        The content of the file is specified in the `file` key of the request 
+        data.
+        """
+
         # file pointer (content)
         file_ptr = request.data['file']
 
@@ -90,7 +150,17 @@ class FileUploadView(views.APIView):
 
 
 class SedutaView(views.APIView):
+
     def get(self, request, tipo, id_seduta):
+        """
+        Returns useful data of a seduta of the given type,
+        starting from the `id_seduta` and the `tipo` parameters.
+        
+        The results is a dict:
+        
+            'id':  the internal unique autoincrement id
+            'url': the absolute url of the  public page        
+        """
         try:
             seduta = Seduta.objects.get(id_seduta=id_seduta, tipo=tipo)
 
@@ -115,6 +185,9 @@ class SedutaView(views.APIView):
 
 
 class PublicView(TemplateView):
+    """
+    The public, shared page, accessible through the `hash`
+    """
     template_name = 'public.html'
 
     def dispatch(self, request, *args, **kwargs):
