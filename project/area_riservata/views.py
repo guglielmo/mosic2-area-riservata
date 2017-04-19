@@ -156,10 +156,12 @@ class SedutaView(views.APIView):
         Returns useful data of a seduta of the given type,
         starting from the `id_seduta` and the `tipo` parameters.
         
-        The results is a dict:
+        The result is a dict:
         
-            'id':  the internal unique autoincrement id
-            'url': the absolute url of the  public page        
+            {
+              'id':  the internal unique autoincrement id
+              'url': the absolute url of the  public page
+            }        
         """
         try:
             seduta = Seduta.objects.get(id_seduta=id_seduta, tipo=tipo)
