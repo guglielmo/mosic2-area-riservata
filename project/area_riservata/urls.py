@@ -10,6 +10,8 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
+from rest_framework_swagger.views import get_swagger_view
+
 import views
 from views import SedutaCIPEViewSet, SedutaPreCIPEViewSet, FileUploadView
 
@@ -20,10 +22,12 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'cipe', SedutaCIPEViewSet, base_name='cipe')
 router.register(r'precipe', SedutaPreCIPEViewSet, base_name='precipe')
 
+schema_view = get_swagger_view(title='Area riservata API')
 
 urls = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
+    url(r'^docs/', schema_view),
     url(r'^upload_file/(?P<filename>.+)$', FileUploadView.as_view(), name='upload-file'),
     url(r'^seduta/(?P<tipo>[^/]+)/(?P<id_seduta>.+)$', views.SedutaView.as_view(), name='url-seduta'),
     url(r'^api-token-auth/', obtain_jwt_token, name='obtain-jwt'),
