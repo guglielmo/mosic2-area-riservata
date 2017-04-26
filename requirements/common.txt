@@ -16,6 +16,7 @@ django-model-utils>=2.2
 
 djangorestframework
 djangorestframework-jwt
+django-rest-swagger==2.1.2
 
 markdown
 django-filter
