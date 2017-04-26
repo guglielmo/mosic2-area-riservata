@@ -9,10 +9,10 @@ class AllegatoInline(admin.TabularInline):
     max_num = 0
     can_delete = False
     show_change_link = True
-    readonly_fields = fields = ('nome', 'tipo', 'file', 'dimensione')
+    readonly_fields = fields = ('id_allegato', 'nome', 'tipo', 'file', 'dimensione')
 
 class PuntoODGAdmin(admin.ModelAdmin):
-    list_display = ('id', 'denominazione', 'progressivo', 'ordine', 'seduta')
+    list_display = ('id', 'id_punto_odg', 'denominazione', 'progressivo', 'ordine', 'seduta')
     readonly_fields = list_display
     search_fields = ('denominazione',)
     inlines = [AllegatoInline,]
@@ -23,7 +23,7 @@ class PuntoODGInline(admin.TabularInline):
     max_num = 0
     can_delete = False
     show_change_link = True
-    readonly_fields = fields = ('denominazione', 'progressivo', 'ordine', )
+    readonly_fields = fields = ('id_punto_odg', 'denominazione', 'progressivo', 'ordine', )
 
     def change_link(self, obj):
         return mark_safe('<a href="%s">Full edit</a>' % \
@@ -33,7 +33,7 @@ class PuntoODGInline(admin.TabularInline):
         )
 
 class SedutaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'hash', 'data')
+    list_display = ('id', 'id_seduta', 'hash', 'data')
     readonly_fields = list_display + ('tipo', 'ufficiale')
     search_fields = ('data',)
     inlines = [PuntoODGInline,]

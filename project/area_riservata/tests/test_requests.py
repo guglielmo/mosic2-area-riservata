@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
 import json
 
 from django.test import TestCase
@@ -41,8 +44,8 @@ class RequestTest(TestCase):
         self.assertEquals(response.status_code, 201)
 
         response = self.client_stub.put(
-            'http://localhost:8000/upload_file/files/Architettura.pdf',
-            files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
+            'http://localhost:8000/upload_file/files/Architettura 1 blocco.pdf',
+            files={'file': open('./resources/fixtures/docs/Architettura 1° blocco.pdf', 'rb')},
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 204)
@@ -73,3 +76,28 @@ class RequestTest(TestCase):
         )
         self.assertEquals(response.status_code, 204)
 
+    def test_create_seduta_with_duplicates(self):
+        with open('./resources/fixtures/duplicates_1.json', 'r') as f:
+            seduta_1 = json.load(f)
+
+        with open('./resources/fixtures/duplicates_2.json', 'r') as f:
+            seduta_2 = json.load(f)
+
+        r = self.client_stub.post(
+            'http://localhost:8000/api-token-auth/',
+            data={"username": "mosic", "password": "mosicmosic"}
+        ).json()
+
+        response = self.client_stub.post(
+            'http://localhost:8000/precipe',
+            json=seduta_1,
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 201)
+
+        response = self.client_stub.post(
+            'http://localhost:8000/precipe',
+            json=seduta_2,
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 201)

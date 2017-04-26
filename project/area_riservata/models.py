@@ -40,7 +40,7 @@ class Seduta(models.Model):
 
 
 class PuntoODG(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id_punto_odg = models.IntegerField()
 
     denominazione = models.TextField(
         max_length=1024
@@ -76,7 +76,7 @@ def relURI_path(instance, filename):
     return '{0}'.format(filename)
 
 class Allegato(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id_allegato = models.IntegerField()
 
     data = models.DateField(
         max_length=10,
@@ -91,7 +91,7 @@ class Allegato(models.Model):
     )
 
     relURI = models.CharField(
-        max_length=255, unique=True
+        max_length=255
     )
 
     # file will contain the file,

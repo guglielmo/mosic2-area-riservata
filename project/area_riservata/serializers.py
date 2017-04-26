@@ -16,7 +16,7 @@ class AllegatoSerializer(serializers.HyperlinkedModelSerializer):
     )
     class Meta:
         model = Allegato
-        fields = ('id', 'data', 'nome', 'tipo', 'relURI', 'dimensione', 'file')
+        fields = ('id_allegato', 'data', 'nome', 'tipo', 'relURI', 'dimensione', 'file')
 
 
 class PuntoODGSerializer(serializers.HyperlinkedModelSerializer):
@@ -24,7 +24,7 @@ class PuntoODGSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = PuntoODG
-        fields = ('id', 'denominazione', 'progressivo', 'ordine', 'allegati')
+        fields = ('id_punto_odg', 'denominazione', 'progressivo', 'ordine', 'allegati')
 
 
 class SedutaSerializer(serializers.HyperlinkedModelSerializer):
@@ -75,7 +75,7 @@ class SedutaCIPESerializer(SedutaSerializer):
     punti_odg = PuntoODGSerializer(required=False, many=True, write_only=True)
     self_uri = serializers.HyperlinkedIdentityField(view_name = 'cipe-detail')
     class Meta(SedutaSerializer.Meta):
-        fields = ('id', 'self_uri', 'tipo', 'data', 'ufficiale', 'punti_odg')
+        fields = ('tipo', 'id_seduta', 'self_uri', 'data', 'ufficiale', 'punti_odg')
 
 class SedutaPreCIPESerializer(SedutaSerializer):
     punti_odg = PuntoODGSerializer(required=False, many=True, write_only=True)
