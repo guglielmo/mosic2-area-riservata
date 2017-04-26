@@ -106,20 +106,20 @@ class FileUploadView(views.APIView):
         # file pointer (content)
         file_ptr = request.data['file']
 
-        # retrieve Allegato object, corresponding to file
+        # retrieve all Allegato objects, corresponding to file
         try:
-            allegato_obj = Allegato.objects.get(relURI=filename)
+            allegato_objects = Allegato.objects.filter(relURI=filename)
+            for allegato_obj in allegato_objects:
+                seduta_hash = allegato_obj.punto_odg.seduta.hash[:10]
+                complete_filename = "{0}_{1}".format(
+                    seduta_hash, filename
+                )
 
-            seduta_hash = allegato_obj.punto_odg.seduta.hash[:10]
-            complete_filename = "{0}_{1}".format(
-                seduta_hash, filename
-            )
+                # remove file from storage if existingm to avoid files duplication
+                allegato_obj.file.storage.delete(complete_filename)
 
-            # remove file from storage if existingm to avoid files duplication
-            allegato_obj.file.storage.delete(complete_filename)
-
-            # save file to storage
-            allegato_obj.file.save(complete_filename, file_ptr)
+                # save file to storage
+                allegato_obj.file.save(complete_filename, file_ptr)
 
             return Response(
                 status=204,
@@ -127,15 +127,6 @@ class FileUploadView(views.APIView):
                     'status': 204,
                     'message':
                         u"File {0} caricato correttamente".format(filename)
-                }
-            )
-        except Allegato.DoesNotExist:
-            return Response(
-                status=404,
-                data={
-                    'status': 404,
-                    'message':
-                        u"File {0} non trovato".format(filename)
                 }
             )
         except Exception as e:

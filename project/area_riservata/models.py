@@ -132,6 +132,7 @@ from django.dispatch import receiver
 @receiver(post_delete, sender=Allegato)
 def allegato_post_delete_handler(sender, **kwargs):
     """remove files from storage when the allegato object is removed
+    TODO: only if no other allegato objects point to that file
     :param sender: 
     :param kwargs: 
     :return: 

@@ -51,7 +51,7 @@ print("")
 
 print("Uploading Architettura file")
 response = requests.put(
-    '{0}/upload_file/files/Architettura.pdf'.format(service_url),
+    '{0}/upload_file/files/architettura.pdf'.format(service_url),
     files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
     headers={'Authorization': 'JWT ' + jwt_token}
 )

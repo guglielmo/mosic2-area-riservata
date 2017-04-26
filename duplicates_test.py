@@ -44,6 +44,17 @@ print(response)
 print("")
 
 
+
+print("Uploading Torino file")
+response = requests.put(
+    '{0}/upload_file/files/torino.pdf'.format(service_url),
+    files={'file': open('./resources/fixtures/docs/torino.pdf', 'rb')},
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+print(response)
+print("")
+
+
 # removing seduta 2
 print("Retrieving seduta internal id")
 response = requests.get(
