@@ -24,9 +24,6 @@ print("Creating seduta from json")
 with open('./resources/fixtures/duplicates_1.json', 'r') as f:
     seduta_1 = json.load(f)
 
-with open('./resources/fixtures/duplicates_2.json', 'r') as f:
-    seduta_2 = json.load(f)
-
 response = requests.post(
     '{0}/precipe'.format(service_url),
     json=seduta_1,
@@ -34,6 +31,19 @@ response = requests.post(
 )
 print(response)
 print("")
+
+print("Uploading Torino file. First time.")
+response = requests.put(
+    '{0}/upload_file/files/torino.pdf'.format(service_url),
+    files={'file': open('./resources/fixtures/docs/torino.pdf', 'rb')},
+    headers={'Authorization': 'JWT ' + jwt_token}
+)
+print(response)
+print("")
+
+
+with open('./resources/fixtures/duplicates_2.json', 'r') as f:
+    seduta_2 = json.load(f)
 
 response = requests.post(
     '{0}/precipe'.format(service_url),
@@ -43,9 +53,7 @@ response = requests.post(
 print(response)
 print("")
 
-
-
-print("Uploading Torino file")
+print("Uploading Torino file. Second time.")
 response = requests.put(
     '{0}/upload_file/files/torino.pdf'.format(service_url),
     files={'file': open('./resources/fixtures/docs/torino.pdf', 'rb')},
