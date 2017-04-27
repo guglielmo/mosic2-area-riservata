@@ -45,7 +45,7 @@ class RequestTest(TestCase):
 
         response = self.client_stub.put(
             'http://localhost:8000/upload_file/files/Architettura 1 blocco.pdf',
-            files={'file': open('./resources/fixtures/docs/Architettura 1° blocco.pdf', 'rb')},
+            files={'file': open('./resources/fixtures/docs/architettura.pdf', 'rb')},
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 204)
@@ -58,11 +58,11 @@ class RequestTest(TestCase):
         self.assertEquals(response.status_code, 204)
 
         response = self.client_stub.put(
-            'http://localhost:8000/upload_file/fils/JWTHandbook.pdf',
+            'http://localhost:8000/upload_file/frugs/JWTHandbook.pdf',
             files={'file': open('./resources/fixtures/docs/jwt_handbook.pdf', 'rb')},
             headers={'Authorization': 'JWT ' + r['token']}
         )
-        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response.status_code, 204)
 
         response = self.client_stub.get(
             'http://localhost:8000/precipe/1',
@@ -95,9 +95,23 @@ class RequestTest(TestCase):
         )
         self.assertEquals(response.status_code, 201)
 
+        response = self.client_stub.put(
+            'http://localhost:8000/upload_file/files/torino.pdf',
+            files={'file': open('./resources/fixtures/docs/torino.pdf', 'rb')},
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 204)
+
         response = self.client_stub.post(
             'http://localhost:8000/precipe',
             json=seduta_2,
             headers={'Authorization': 'JWT ' + r['token']}
         )
         self.assertEquals(response.status_code, 201)
+
+        response = self.client_stub.put(
+            'http://localhost:8000/upload_file/files/torino.pdf',
+            files={'file': open('./resources/fixtures/docs/torino.pdf', 'rb')},
+            headers={'Authorization': 'JWT ' + r['token']}
+        )
+        self.assertEquals(response.status_code, 204)
