@@ -125,7 +125,7 @@ class FileUploadView(views.APIView):
 
                 # force permissions change to solve big files problem on server
                 uploaded_file_path = allegato_obj.file.storage.path(complete_filename)
-                os.chmod(uploaded_file_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+                os.chmod(uploaded_file_path, stat.S_IWUSR | stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
             return Response(
                 status=204,
