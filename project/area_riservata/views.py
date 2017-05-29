@@ -2,6 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 # ViewSets define the view behavior.
+import os
+import stat
 from collections import OrderedDict
 
 from django.contrib.sites.models import Site
@@ -104,7 +106,7 @@ class FileUploadView(views.APIView):
         """
 
         # file pointer (content)
-        file_ptr = request.data['file']
+        file_ptr = request. data['file']
 
         # retrieve all Allegato objects, corresponding to file
         try:
@@ -120,6 +122,10 @@ class FileUploadView(views.APIView):
 
                 # save file to storage
                 allegato_obj.file.save(complete_filename, file_ptr)
+
+                # force permissions change to solve big files problem on server
+                uploaded_file_path = allegato_obj.file.storage.path(complete_filename)
+                os.chmod(uploaded_file_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
             return Response(
                 status=204,
