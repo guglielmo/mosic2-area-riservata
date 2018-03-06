@@ -65,6 +65,15 @@ class SedutaSerializer(serializers.HyperlinkedModelSerializer):
                     Allegato.objects.create(
                         punto_odg=punto_odg, **allegato_data
                     )
+
+                # for allegato_data in allegati_data:
+                #     allegato_id = allegato_data.pop('id_allegato')
+                #     allegato, created = Allegato.objects.get_or_create(
+                #         id_allegato=allegato_id,
+                #         defaults=allegato_data
+                #     )
+                #     punto_odg.allegati.add(allegato)
+
             return seduta
 
     class Meta:

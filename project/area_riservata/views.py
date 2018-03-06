@@ -25,7 +25,7 @@ class BaseSedutaViewSet(mixins.CreateModelMixin,
                     mixins.DestroyModelMixin,
                     viewsets.GenericViewSet):
     """
-    The base viewset for the SedutaViewsets, that provides 
+    The base viewset for the SedutaViewsets, that provides
     `retrieve`, `create`, `list` and `delete` actions.
 
     To use it, override the class and set the `.queryset` and
@@ -38,19 +38,19 @@ class SedutaCIPEViewSet(BaseSedutaViewSet):
     """
     create:
     Creates a new seduta of type `cipe`, and all its sub-objects, if they're
-    recursively passed in the JSON body 
-    
+    recursively passed in the JSON body
+
     list:
     Lists all sedute of type `cipe`. Shows link to detailed views.
-    
+
     retrieve:
     Shows the full details of the seduta of type `cipe` identified by {id},
     along with its children objects.
-    
+
     delete:
     Deletes the seduta of type `cipe` identified by {id} and, recursively,
     its children objects from the Database  and the attached documents from the
-    file system. 
+    file system.
     """
 
     queryset = Seduta.objects.filter(tipo='cipe')
@@ -67,19 +67,19 @@ class SedutaPreCIPEViewSet(BaseSedutaViewSet):
     """
     create:
     Creates a new seduta of type `precipe`, and all its sub-objects, if they're
-    recursively passed in the JSON body 
-    
+    recursively passed in the JSON body
+
     list:
     Lists all sedute of type `precipe`. Shows link to detailed views.
-    
+
     retrieve:
     Shows the full details of the seduta of type `precipe` identified by {id},
     along with its children objects.
-    
+
     delete:
     Deletes the seduta of type `precipe` identified by {id} and, recursively,
     its children objects from the Database  and the attached documents from the
-    file system. 
+    file system.
     """
     queryset = Seduta.objects.filter(tipo='precipe')
     serializer_class = SedutaPreCIPESerializer
@@ -97,16 +97,16 @@ class FileUploadView(views.APIView):
     def put(self, request, filename):
         """
         Uploads a file.
-        
+
         The file is put into the `media` path, using part of the hash
-        and the `filename` parameter. 
-        
-        The content of the file is specified in the `file` key of the request 
+        and the `filename` parameter.
+
+        The content of the file is specified in the `file` key of the request
         data.
         """
 
         # file pointer (content)
-        file_ptr = request. data['file']
+        file_ptr = request.data['file']
 
         # retrieve all Allegato objects, corresponding to file
         try:
@@ -152,13 +152,13 @@ class SedutaView(views.APIView):
         """
         Returns useful data of a seduta of the given type,
         starting from the `id_seduta` and the `tipo` parameters.
-        
+
         The result is a dict:
-        
+
             {
               'id':  the internal unique autoincrement id
               'url': the absolute url of the  public page
-            }        
+            }
         """
         try:
             seduta = Seduta.objects.get(id_seduta=id_seduta, tipo=tipo)

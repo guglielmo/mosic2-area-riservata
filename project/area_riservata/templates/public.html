@@ -16,7 +16,11 @@
         <p>Documenti allegati</p>
         <ul>
             {% for doc in punto_odg.allegati.all %}
-                <li><a href="{{ doc.file.url }}">{{ doc.nome }}</a></li>
+                {% if doc.file %}
+                    <li><a href="{{ doc.file.url }}">{{ doc.nome }}</a></li>
+                {% else %}
+                    <li>{{ doc.nome }} [File non trovato]</li>
+                {% endif %}
             {% endfor %}
         </ul>
         {% endif %}
