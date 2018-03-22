@@ -83,7 +83,7 @@ class Allegato(models.Model):
     )
 
     nome = models.CharField(
-        max_length=128
+        max_length=512
     )
 
     tipo = models.CharField(
@@ -91,14 +91,14 @@ class Allegato(models.Model):
     )
 
     relURI = models.CharField(
-        max_length=255
+        max_length=512
     )
 
     # file will contain the file,
     # it is null becaus it can be added after the Allegato
     # object has been created
     file = models.FileField(
-        max_length=255,
+        max_length=512,
         blank=True, null=True,
         upload_to=relURI_path
     )
@@ -133,9 +133,9 @@ from django.dispatch import receiver
 def allegato_post_delete_handler(sender, **kwargs):
     """remove files from storage when the allegato object is removed
     TODO: only if no other allegato objects point to that file
-    :param sender: 
-    :param kwargs: 
-    :return: 
+    :param sender:
+    :param kwargs:
+    :return:
     """
     allegato_obj = kwargs['instance']
     if allegato_obj.file:
