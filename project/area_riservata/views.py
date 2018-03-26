@@ -2,10 +2,15 @@
 # -*- coding: UTF-8 -*-
 
 # ViewSets define the view behavior.
+import logging
 import os
 import stat
+import traceback
+import tempfile
+
 from collections import OrderedDict
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -18,6 +23,8 @@ from rest_framework.response import Response
 from models import Seduta, Allegato
 from serializers import SedutaDetailSerializer, \
     SedutaCIPESerializer, SedutaPreCIPESerializer
+
+logger = logging.getLogger('django')
 
 class BaseSedutaViewSet(mixins.CreateModelMixin,
                     mixins.ListModelMixin,
@@ -106,44 +113,53 @@ class FileUploadView(views.APIView):
         """
 
         # file pointer (content)
-        file_ptr = request.data['file']
+        with tempfile.SpooledTemporaryFile(max_size=settings.FILE_UPLOAD_MAX_MEMORY_SIZE) as tf:
+            tf.write(request.data['file'].read())
+            logger.info("File name: {0}".format(filename))
 
-        # retrieve all Allegato objects, corresponding to file
-        try:
-            allegato_objects = Allegato.objects.filter(relURI=filename)
-            for allegato_obj in allegato_objects:
-                seduta_hash = allegato_obj.punto_odg.seduta.hash[:10]
-                complete_filename = "{0}_{1}".format(
-                    seduta_hash, filename
+            # retrieve all Allegato objects, corresponding to file
+            try:
+                allegato_objects = Allegato.objects.filter(relURI=filename)
+                for allegato_obj in allegato_objects:
+                    seduta_hash = allegato_obj.punto_odg.seduta.hash[:10]
+                    complete_filename = "{0}_{1}".format(
+                        seduta_hash, filename
+                    )
+                    logger.info("  complete_name: {0}".format(allegato_obj.file.storage.path(complete_filename)))
+
+                    # remove file from storage if existingm to avoid files duplication
+                    allegato_obj.file.storage.delete(complete_filename)
+                    logger.info(" allegato_obj deleted")
+
+                    # save file to storage
+                    allegato_obj.file.save(complete_filename, tf)
+                    logger.info(" allegato_obj saved")
+
+                    # force permissions change to solve big files problem on server
+                    uploaded_file_path = allegato_obj.file.storage.path(complete_filename)
+                    logger.info(" uploaded file path: {0}".format(uploaded_file_path))
+                    os.chmod(uploaded_file_path, stat.S_IWUSR | stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+                    logger.info(" allegato_obj permissions modified")
+
+                return Response(
+                    status=204,
+                    data={
+                        'status': 204,
+                        'message':
+                            u"File {0} caricato correttamente".format(filename)
+                    }
                 )
-
-                # remove file from storage if existingm to avoid files duplication
-                allegato_obj.file.storage.delete(complete_filename)
-
-                # save file to storage
-                allegato_obj.file.save(complete_filename, file_ptr)
-
-                # force permissions change to solve big files problem on server
-                uploaded_file_path = allegato_obj.file.storage.path(complete_filename)
-                os.chmod(uploaded_file_path, stat.S_IWUSR | stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
-
-            return Response(
-                status=204,
-                data={
-                    'status': 204,
-                    'message':
-                        u"File {0} caricato correttamente".format(filename)
-                }
-            )
-        except Exception as e:
-            return Response(
-                status=500,
-                data={
-                    'status': 500,
-                    'message':
-                        u"Errore durante caricamento di {0}: {1}".format(filename, repr(e))
-                }
-            )
+            except Exception as e:
+                logger.error("Errore durante caricamento di {0}: {1}".format(filename, repr(e)))
+                logger.error("Traceback: {0}".format(traceback.format_exc()))
+                return Response(
+                    status=500,
+                    data={
+                        'status': 500,
+                        'message':
+                            u"Errore durante caricamento di {0}: {1}".format(filename, repr(e))
+                    }
+                )
 
 
 class SedutaView(views.APIView):

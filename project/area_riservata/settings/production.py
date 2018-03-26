@@ -24,9 +24,9 @@ DATABASES = {
 # more details on how to customize your logging configuration.
 # See base.LOGGING
 LOGGING['loggers'] = {
-    '': {
+    'django': {
         'handlers': ['file', ],
-        'level': 'DEBUG' if DEBUG else 'INFO'
+        'level': 'INFO'
     }
 }
 ########## END LOGGING CONFIGURATION
